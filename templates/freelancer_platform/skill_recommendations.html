@@ -1,0 +1,153 @@
+{% extends 'freelancer_platform/base.html' %}
+
+{% block title %}AI Skill Recommendations - Local Free-Lancer{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h1 class="text-2xl font-bold text-gray-900">🌟 AI Skill Recommendations</h1>
+            <p class="text-gray-600 mt-1">Get AI-powered suggestions to expand your freelance opportunities</p>
+        </div>
+        
+        <div class="px-6 py-4">
+            <div class="mb-6">
+                <label for="skill-input" class="block text-sm font-medium text-gray-700 mb-2">
+                    Enter Your Skill
+                </label>
+                <div class="flex gap-2">
+                    <input type="text" 
+                        id="skill-input" 
+                        placeholder="e.g., cooking, tailoring, electrical work..."
+                        class="flex-1 form-control">
+                    <button id="get-recommendations" 
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                        Get AI Suggestions
+                    </button>
+                </div>
+            </div>
+
+            <div id="loading" class="hidden">
+                <div class="flex items-center justify-center py-8">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                    <span class="ml-2 text-gray-600">Getting AI recommendations...</span>
+                </div>
+            </div>
+
+            <div id="recommendations" class="hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                            <svg class="w-5 h-5 inline mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                            </svg>
+                            AI Recommendations
+                        </h3>
+                        <div id="ai-recommendations" class="prose prose-sm max-w-none text-gray-700">
+                            <!-- AI recommendations will be inserted here -->
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-green-50 to-emerald-100 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                            <svg class="w-5 h-5 inline mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                            Related Skills
+                        </h3>
+                        <div id="similar-skills" class="space-y-2">
+                            <!-- Similar skills will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="error" class="hidden">
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div class="flex">
+                        <svg class="w-5 h-5 text-red-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span class="text-red-800" id="error-message"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const skillInput = document.getElementById('skill-input');
+    const getRecommendationsBtn = document.getElementById('get-recommendations');
+    const loading = document.getElementById('loading');
+    const recommendations = document.getElementById('recommendations');
+    const error = document.getElementById('error');
+    const aiRecommendations = document.getElementById('ai-recommendations');
+    const similarSkills = document.getElementById('similar-skills');
+    const errorMessage = document.getElementById('error-message');
+
+    getRecommendationsBtn.addEventListener('click', function() {
+        const skill = skillInput.value.trim();
+        if (!skill) {
+            alert('Please enter a skill');
+            return;
+        }
+
+        // Show loading
+        loading.classList.remove('hidden');
+        recommendations.classList.add('hidden');
+        error.classList.add('hidden');
+
+        // Make AJAX request
+        fetch('{% url "skill_recommendations" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: `skill=${encodeURIComponent(skill)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            loading.classList.add('hidden');
+            
+            if (data.error) {
+                errorMessage.textContent = data.error;
+                error.classList.remove('hidden');
+                return;
+            }
+
+            // Display AI recommendations
+            aiRecommendations.innerHTML = data.recommendations.replace(/\n/g, '<br>');
+            
+            // Display similar skills
+            similarSkills.innerHTML = '';
+            data.similar_skills.forEach(skill => {
+                const skillElement = document.createElement('div');
+                skillElement.className = 'inline-block bg-white px-3 py-1 rounded-full text-sm font-medium text-gray-700 border border-gray-200 mr-2 mb-2';
+                skillElement.textContent = skill;
+                similarSkills.appendChild(skillElement);
+            });
+
+            recommendations.classList.remove('hidden');
+        })
+        .catch(err => {
+            loading.classList.add('hidden');
+            errorMessage.textContent = 'Failed to get recommendations. Please try again.';
+            error.classList.remove('hidden');
+        });
+    });
+
+    // Allow Enter key to submit
+    skillInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            getRecommendationsBtn.click();
+        }
+    });
+});
+</script>
+{% endblock %} 

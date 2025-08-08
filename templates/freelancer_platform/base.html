@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Local Free-Lancer{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#1E40AF',
+                        accent: '#F59E0B',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-lg border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <!-- Logo and Brand -->
+                <div class="flex items-center">
+                    <a href="{% url 'home' %}" class="flex-shrink-0 flex items-center">
+                        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-lg">L</span>
+                        </div>
+                        <span class="ml-2 text-xl font-bold text-gray-900" data-translate="brand">Local Free-Lancer</span>
+                    </a>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="{% url 'home' %}" class="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors" data-translate="nav_home">
+                        Home
+                    </a>
+                    
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'dashboard' %}" class="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors" data-translate="nav_dashboard">
+                            Dashboard
+                        </a>
+                        {% if user.userprofile.user_type == 'recruiter' %}
+                            <a href="{% url 'post_job' %}" class="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors" data-translate="nav_post_job">
+                                Post Job
+                            </a>
+                        {% elif user.userprofile.user_type == 'freelancer' %}
+                            <a href="{% url 'freelancer_profile' %}" class="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors" data-translate="nav_my_profile">
+                                My Profile
+                            </a>
+                        {% endif %}
+                        
+                        <!-- Language Selector -->
+                        <div class="relative">
+                            <button id="languageDropdown" class="flex items-center space-x-1 text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                                <span id="currentLanguage">English</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div id="languageMenu" class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg py-1 z-50 hidden">
+                                <button class="language-option block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-lang="en">English</button>
+                                <button class="language-option block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-lang="hi">हिंदी</button>
+                                <button class="language-option block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-lang="mr">मराठी</button>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            <span class="text-sm text-gray-600" data-translate="welcome">Welcome, {{ user.username }}</span>
+                            <a href="{% url 'logout' %}" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors" data-translate="nav_logout">
+                                Logout
+                            </a>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors" data-translate="nav_login">
+                            Login
+                        </a>
+                        <a href="{% url 'register' %}" class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-md text-sm font-medium transition-colors" data-translate="nav_register">
+                            Register
+                        </a>
+                        
+                        <!-- Language Selector for non-authenticated users -->
+                        <div class="relative">
+                            <button id="languageDropdownGuest" class="flex items-center space-x-1 text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                                <span id="currentLanguageGuest">English</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div id="languageMenuGuest" class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg py-1 z-50 hidden">
+                                <button class="language-option-guest block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-lang="en">English</button>
+                                <button class="language-option-guest block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-lang="hi">हिंदी</button>
+                                <button class="language-option-guest block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-lang="mr">मराठी</button>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobileMenuButton" class="text-gray-700 hover:text-primary focus:outline-none focus:text-primary">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile menu -->
+            <div id="mobileMenu" class="md:hidden hidden">
+                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                    <a href="{% url 'home' %}" class="text-gray-700 hover:text-primary block px-3 py-2 rounded-md text-base font-medium" data-translate="nav_home">
+                        Home
+                    </a>
+                    
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'dashboard' %}" class="text-gray-700 hover:text-primary block px-3 py-2 rounded-md text-base font-medium" data-translate="nav_dashboard">
+                            Dashboard
+                        </a>
+                        {% if user.userprofile.user_type == 'recruiter' %}
+                            <a href="{% url 'post_job' %}" class="text-gray-700 hover:text-primary block px-3 py-2 rounded-md text-base font-medium" data-translate="nav_post_job">
+                                Post Job
+                            </a>
+                        {% elif user.userprofile.user_type == 'freelancer' %}
+                            <a href="{% url 'freelancer_profile' %}" class="text-gray-700 hover:text-primary block px-3 py-2 rounded-md text-base font-medium" data-translate="nav_my_profile">
+                                My Profile
+                            </a>
+                        {% endif %}
+                        
+                        <div class="border-t border-gray-200 pt-4">
+                            <span class="text-sm text-gray-600 block px-3 py-2" data-translate="welcome">Welcome, {{ user.username }}</span>
+                            <a href="{% url 'logout' %}" class="text-red-600 hover:text-red-800 block px-3 py-2 rounded-md text-base font-medium" data-translate="nav_logout">
+                                Logout
+                            </a>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="text-gray-700 hover:text-primary block px-3 py-2 rounded-md text-base font-medium" data-translate="nav_login">
+                            Login
+                        </a>
+                        <a href="{% url 'register' %}" class="text-gray-700 hover:text-primary block px-3 py-2 rounded-md text-base font-medium" data-translate="nav_register">
+                            Register
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        {% if messages %}
+            <div class="mb-6">
+                {% for message in messages %}
+                    <div class="{% if message.tags == 'error' %}bg-red-100 border-red-400 text-red-700{% elif message.tags == 'success' %}bg-green-100 border-green-400 text-green-700{% elif message.tags == 'warning' %}bg-yellow-100 border-yellow-400 text-yellow-700{% else %}bg-blue-100 border-blue-400 text-blue-700{% endif %} border px-4 py-3 rounded relative" role="alert">
+                        <span class="block sm:inline">{{ message }}</span>
+                        <button type="button" class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.remove()">
+                            <svg class="fill-current h-6 w-6" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <title>Close</title>
+                                <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/>
+                            </svg>
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}
+        <!-- Example: Add data-translate to your main content for translation -->
+        <h1 data-translate="home_title">Welcome to Local Free-Lancer</h1>
+        <p data-translate="home_intro">Find local jobs and freelance opportunities in your area.</p>
+        <!-- Add more data-translate attributes as needed for your content -->
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-lg">L</span>
+                        </div>
+                        <span class="ml-2 text-xl font-bold" data-translate="brand_footer">Local Free-Lancer</span>
+                    </div>
+                    <p class="text-gray-300 mb-4" data-translate="footer_desc">
+                        Empowering communities through local work opportunities. Connecting talent with opportunity to reduce poverty and build stronger communities.
+                    </p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4" data-translate="quick_links">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="{% url 'home' %}" class="text-gray-300 hover:text-white transition-colors" data-translate="nav_home">Home</a></li>
+                        <li><a href="{% url 'register' %}" class="text-gray-300 hover:text-white transition-colors" data-translate="nav_register">Register</a></li>
+                        <li><a href="{% url 'login' %}" class="text-gray-300 hover:text-white transition-colors" data-translate="nav_login">Login</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4" data-translate="contact">Contact</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li data-translate="footer_email">Email: support@localfreelancer.com</li>
+                        <li data-translate="footer_phone">Phone: +1 (555) 123-4567</li>
+                        <li data-translate="footer_address">Address: Local Community Center</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
+                <p data-translate="footer_copyright">&copy; 2024 Local Free-Lancer. All rights reserved. Dedicated to reducing poverty through local economic empowerment.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobileMenuButton').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Global translations object
+        const translations = {
+            en: {
+                brand: "Local Free-Lancer",
+                brand_footer: "Local Free-Lancer",
+                nav_home: "Home",
+                nav_dashboard: "Dashboard",
+                nav_post_job: "Post Job",
+                nav_my_profile: "My Profile",
+                nav_login: "Login",
+                nav_register: "Register",
+                nav_logout: "Logout",
+                welcome: "Welcome",
+                home_title: "Welcome to Local Free-Lancer",
+                home_intro: "Find local jobs and freelance opportunities in your area.",
+                quick_links: "Quick Links",
+                contact: "Contact",
+                footer_desc: "Empowering communities through local work opportunities. Connecting talent with opportunity to reduce poverty and build stronger communities.",
+                footer_email: "Email: support@localfreelancer.com",
+                footer_phone: "Phone: +1 (555) 123-4567",
+                footer_address: "Address: Local Community Center",
+                footer_copyright: "© 2024 Local Free-Lancer. All rights reserved. Dedicated to reducing poverty through local economic empowerment."
+            },
+            hi: {
+                brand: "लोकल फ्री-लांसर",
+                brand_footer: "लोकल फ्री-लांसर",
+                nav_home: "होम",
+                nav_dashboard: "डैशबोर्ड",
+                nav_post_job: "नौकरी पोस्ट करें",
+                nav_my_profile: "मेरी प्रोफाइल",
+                nav_login: "लॉगिन",
+                nav_register: "रजिस्टर",
+                nav_logout: "लॉगआउट",
+                welcome: "स्वागत है",
+                home_title: "लोकल फ्री-लांसर में आपका स्वागत है",
+                home_intro: "अपने क्षेत्र में स्थानीय नौकरियां और फ्रीलांस अवसर खोजें।",
+                quick_links: "त्वरित लिंक",
+                contact: "संपर्क करें",
+                footer_desc: "स्थानीय कार्य के अवसरों के माध्यम से समुदायों को सशक्त बनाना। गरीबी को कम करने और मजबूत समुदाय बनाने के लिए प्रतिभा को अवसर से जोड़ना।",
+                footer_email: "ईमेल: support@localfreelancer.com",
+                footer_phone: "फोन: +1 (555) 123-4567",
+                footer_address: "पता: स्थानीय सामुदायिक केंद्र",
+                footer_copyright: "© 2024 लोकल फ्री-लांसर. सर्वाधिकार सुरक्षित. स्थानीय आर्थिक सशक्तिकरण के माध्यम से गरीबी को कम करने के लिए समर्पित।"
+            },
+            mr: {
+                brand: "लोकल फ्री-लांसर",
+                brand_footer: "लोकल फ्री-लांसर",
+                nav_home: "होम",
+                nav_dashboard: "डॅशबोर्ड",
+                nav_post_job: "नोकरी पोस्ट करा",
+                nav_my_profile: "माझी प्रोफाइल",
+                nav_login: "लॉगिन",
+                nav_register: "रजिस्टर",
+                nav_logout: "लॉगआउट",
+                welcome: "स्वागत आहे",
+                home_title: "लोकल फ्री-लांसर मध्ये आपले स्वागत आहे",
+                home_intro: "आपल्या भागातील स्थानिक नोकऱ्या आणि फ्रीलान्स संधी शोधा.",
+                quick_links: "द्रुत दुवे",
+                contact: "संपर्क",
+                footer_desc: "स्थानिक कामाच्या संधींमधून समुदायांना सक्षम बनवणे. गरिबी कमी करण्यासाठी आणि मजबूत समुदाय तयार करण्यासाठी प्रतिभेला संधीशी जोडणे.",
+                footer_email: "ईमेल: support@localfreelancer.com",
+                footer_phone: "फोन: +1 (555) 123-4567",
+                footer_address: "पत्ता: स्थानिक कम्युनिटी सेंटर",
+                footer_copyright: "© 2024 लोकल फ्री-लांसर. सर्व हक्क राखीव. स्थानिक आर्थिक सशक्तीकरणाद्वारे गरिबी कमी करण्यासाठी समर्पित."
+            }
+        };
+
+        // Function to translate page content
+        function translatePage(lang) {
+            const elements = document.querySelectorAll('[data-translate]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+        }
+
+        // Language dropdown functionality with persistence
+        function setupLanguageDropdown(dropdownId, menuId, currentLangId, optionClass, storageKey) {
+            const dropdown = document.getElementById(dropdownId);
+            const menu = document.getElementById(menuId);
+            const currentLang = document.getElementById(currentLangId);
+
+            // Set initial language from localStorage
+            let lang = localStorage.getItem(storageKey) || 'en';
+            translatePage(lang);
+            if (currentLang) {
+                // Set the dropdown label
+                const selectedBtn = document.querySelector(`.${optionClass}[data-lang="${lang}"]`);
+                if (selectedBtn) currentLang.textContent = selectedBtn.textContent;
+            }
+
+            if (dropdown && menu && currentLang) {
+                dropdown.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    menu.classList.toggle('hidden');
+                });
+
+                document.addEventListener('click', function() {
+                    menu.classList.add('hidden');
+                });
+
+                const options = document.querySelectorAll('.' + optionClass);
+                options.forEach(option => {
+                    option.addEventListener('click', function() {
+                        lang = this.getAttribute('data-lang');
+                        const langText = this.textContent;
+                        currentLang.textContent = langText;
+                        menu.classList.add('hidden');
+                        localStorage.setItem(storageKey, lang);
+                        translatePage(lang);
+                    });
+                });
+            }
+        }
+
+        // Setup language dropdowns for both authenticated and guest users
+        setupLanguageDropdown('languageDropdown', 'languageMenu', 'currentLanguage', 'language-option', 'siteLang');
+        setupLanguageDropdown('languageDropdownGuest', 'languageMenuGuest', 'currentLanguageGuest', 'language-option-guest', 'siteLang');
+
+        // On page load, translate using stored language
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = localStorage.getItem('siteLang') || 'en';
+            translatePage(lang);
+        });
+    </script>
+</body>
+</html>

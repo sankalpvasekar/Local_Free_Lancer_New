@@ -1,0 +1,170 @@
+{% extends 'freelancer_platform/base.html' %}
+
+{% block title %}Skill-Based Job Recommendations - Local Free-Lancer{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Skill-Based Job Recommendations</h1>
+            <p class="text-gray-600">Jobs matched to your skills using AI technology</p>
+        </div>
+
+        <!-- Skills Summary -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Your Skills</h2>
+            <div class="flex flex-wrap gap-2">
+                {% if user_profile.selected_skills %}
+                    {% for skill in user_profile.selected_skills %}
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                            {{ user_profile.get_selected_skills_display|slice:skill|slice:":-2" }}
+                        </span>
+                    {% endfor %}
+                {% endif %}
+                {% if user_profile.skills %}
+                    {% for skill in user_profile.get_skills_list %}
+                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                            {{ skill }}
+                        </span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            {% if not user_profile.selected_skills and not user_profile.skills %}
+                <p class="text-gray-500 text-sm">No skills added yet. <a href="{% url 'freelancer_profile' %}" class="text-blue-600 hover:text-blue-800">Update your profile</a> to get better recommendations.</p>
+            {% endif %}
+        </div>
+
+        <!-- Job Recommendations -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Recommended Jobs</h2>
+            
+            {% if matching_jobs %}
+                <div class="space-y-6">
+                    {% for job_match in matching_jobs %}
+                    <div class="border rounded-lg p-6 hover:shadow-md transition duration-200">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex-1">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ job_match.job.title }}</h3>
+                                <div class="flex items-center space-x-4 text-sm text-gray-600 mb-3">
+                                    <span class="flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        ${{ job_match.job.salary_min }} - ${{ job_match.job.salary_max }}
+                                    </span>
+                                    <span class="flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        {{ job_match.job.location }}
+                                    </span>
+                                    <span class="flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        {{ job_match.job.duration_months }} months
+                                    </span>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <p class="text-gray-700">{{ job_match.job.description|truncatewords:30 }}</p>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <h4 class="text-sm font-medium text-gray-700 mb-2">Required Skills:</h4>
+                                    <div class="flex flex-wrap gap-2">
+                                        {% for skill in job_match.job.required_skills.split|slice:":5" %}
+                                            <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs">
+                                                {{ skill|slice:":-1" }}
+                                            </span>
+                                        {% endfor %}
+                                        {% if job_match.job.required_skills.split|length > 5 %}
+                                            <span class="text-gray-500 text-xs">+{{ job_match.job.required_skills.split|length|add:"-5" }} more</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-4">
+                                        <span class="text-sm text-gray-600">Posted by: {{ job_match.job.recruiter.user.get_full_name|default:job_match.job.recruiter.user.username }}</span>
+                                        <span class="text-sm text-gray-500">{{ job_match.job.created_at|timesince }} ago</span>
+                                    </div>
+                                    
+                                    <div class="flex items-center space-x-3">
+                                        <!-- Match Score -->
+                                        <div class="text-center">
+                                            <div class="text-lg font-bold text-green-600">{{ job_match.match_score }}/10</div>
+                                            <div class="text-xs text-gray-500">Match</div>
+                                        </div>
+                                        
+                                        <!-- Action Buttons -->
+                                        <div class="flex space-x-2">
+                                            <a href="{% url 'job_detail' job_match.job.id %}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200">
+                                                View Details
+                                            </a>
+                                            <a href="{% url 'request_job' job_match.job.id %}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200">
+                                                Request Job
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Pagination or Load More -->
+                <div class="mt-8 text-center">
+                    <p class="text-gray-600">Showing {{ matching_jobs|length }} recommended jobs</p>
+                </div>
+                
+            {% else %}
+                <div class="text-center py-12">
+                    <div class="mb-4">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">No matching jobs found</h3>
+                    <p class="text-gray-500 mb-6">We couldn't find any jobs that match your current skills.</p>
+                    <div class="space-y-3">
+                        <a href="{% url 'freelancer_profile' %}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition duration-200">
+                            Update Your Skills
+                        </a>
+                        <div class="text-sm text-gray-500">
+                            <p>Or <a href="{% url 'dashboard' %}" class="text-blue-600 hover:text-blue-800">browse all available jobs</a></p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- AI Recommendations Info -->
+        <div class="mt-8 bg-purple-50 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-purple-900 mb-3">How AI Matching Works</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-purple-800">
+                <div class="text-center">
+                    <div class="bg-purple-100 rounded-full w-8 h-8 flex items-center justify-center mx-auto mb-2">
+                        <span class="text-purple-600 font-bold">1</span>
+                    </div>
+                    <p>Analyzes your selected skills and additional skills</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-purple-100 rounded-full w-8 h-8 flex items-center justify-center mx-auto mb-2">
+                        <span class="text-purple-600 font-bold">2</span>
+                    </div>
+                    <p>Compares with job requirements using AI</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-purple-100 rounded-full w-8 h-8 flex items-center justify-center mx-auto mb-2">
+                        <span class="text-purple-600 font-bold">3</span>
+                    </div>
+                    <p>Ranks jobs by match score (1-10)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

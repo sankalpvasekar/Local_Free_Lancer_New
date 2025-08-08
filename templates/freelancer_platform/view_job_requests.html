@@ -1,0 +1,185 @@
+{% extends 'freelancer_platform/base.html' %}
+
+{% block title %}Job Requests - Local Free-Lancer{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Job Requests</h1>
+                    <p class="text-gray-600 mt-1">{{ job.title }} - {{ job.company_name }}</p>
+                </div>
+                <div class="text-right">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                        {% if job.status == 'open' %}bg-green-100 text-green-800
+                        {% elif job.status == 'assigned' %}bg-blue-100 text-blue-800
+                        {% else %}bg-gray-100 text-gray-800{% endif %}">
+                        {{ job.get_status_display }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="px-6 py-4">
+            {% if job_requests %}
+                <div class="space-y-4">
+                    {% for request in job_requests %}
+                    <div class="border border-gray-200 rounded-lg p-4 {% if request.status == 'approved' %}bg-green-50 border-green-200{% elif request.status == 'rejected' %}bg-red-50 border-red-200{% endif %}">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <h3 class="text-lg font-medium text-gray-900">
+                                        {{ request.freelancer.user.get_full_name|default:request.freelancer.user.username }}
+                                    </h3>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                        {% if request.status == 'approved' %}bg-green-100 text-green-800
+                                        {% elif request.status == 'rejected' %}bg-red-100 text-red-800
+                                        {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                                        {{ request.get_status_display }}
+                                    </span>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm mb-3">
+                                    <div>
+                                        <span class="font-medium text-gray-700">Experience:</span>
+                                        <span class="text-gray-600">{{ request.freelancer.experience_years }} years</span>
+                                    </div>
+                                    <div>
+                                        <span class="font-medium text-gray-700">Hourly Rate:</span>
+                                        <span class="text-gray-600">₹{{ request.freelancer.hourly_rate }}/hr</span>
+                                    </div>
+                                    <div>
+                                        <span class="font-medium text-gray-700">Requested:</span>
+                                        <span class="text-gray-600">{{ request.created_at|timesince }} ago</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Proposal Details -->
+                                <div class="bg-blue-50 rounded-lg p-3 mb-3">
+                                    <h4 class="font-medium text-gray-900 mb-2">Proposal Details</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                                        <div>
+                                            <span class="font-medium text-gray-700">Proposal:</span>
+                                            <span class="text-gray-600">{{ request.get_proposal_display }}</span>
+                                        </div>
+                                        <div>
+                                            <span class="font-medium text-gray-700">Type:</span>
+                                            <span class="text-gray-600">{{ request.get_proposal_type_display }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                {% if request.freelancer.skills %}
+                                <div class="mb-3">
+                                    <span class="font-medium text-gray-700">Skills:</span>
+                                    <p class="text-gray-600 mt-1">{{ request.freelancer.skills }}</p>
+                                </div>
+                                {% endif %}
+                                
+                                <!-- Cover Letter -->
+                                <div class="mb-3">
+                                    <span class="font-medium text-gray-700">Cover Letter:</span>
+                                    <p class="text-gray-600 mt-1">{{ request.cover_letter }}</p>
+                                </div>
+                                
+                                <!-- Audio Cover Letter -->
+                                {% if request.cover_letter_audio %}
+                                <div class="mb-3">
+                                    <span class="font-medium text-gray-700">Audio Cover Letter:</span>
+                                    <audio controls class="mt-1 w-full">
+                                        <source src="{{ request.cover_letter_audio.url }}" type="audio/wav">
+                                        Your browser does not support the audio element.
+                                    </audio>
+                                </div>
+                                {% endif %}
+                                
+                                <!-- Work Examples -->
+                                {% if request.selected_work_examples.all %}
+                                <div class="mb-3">
+                                    <span class="font-medium text-gray-700">Work Examples:</span>
+                                    <div class="mt-1 space-y-2">
+                                        {% for work_example in request.selected_work_examples.all %}
+                                        <div class="bg-white rounded border p-2">
+                                            <div class="flex items-center justify-between">
+                                                <div>
+                                                    <span class="font-medium text-sm">{{ work_example.title }}</span>
+                                                    <span class="text-xs text-gray-500 ml-2">({{ work_example.get_work_type_display }})</span>
+                                                </div>
+                                                <a href="{{ work_example.file.url }}" target="_blank" class="text-primary hover:underline text-sm">
+                                                    View
+                                                </a>
+                                            </div>
+                                            {% if work_example.description %}
+                                            <p class="text-xs text-gray-600 mt-1">{{ work_example.description }}</p>
+                                            {% endif %}
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                                
+                                <!-- Certificates -->
+                                {% if request.certificates %}
+                                <div class="mb-3">
+                                    <span class="font-medium text-gray-700">Certificates:</span>
+                                    <div class="mt-1">
+                                        <a href="{{ request.certificates.url }}" target="_blank" class="inline-flex items-center text-primary hover:underline">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                            </svg>
+                                            View Certificate
+                                        </a>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            {% if request.status == 'pending' and job.status == 'open' %}
+                            <div class="ml-4 flex space-x-2">
+                                <a href="{% url 'approve_job_request' request.id %}" 
+                                   class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
+                                   onclick="return confirm('Are you sure you want to approve this request? This will assign the job to this freelancer.')">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Approve
+                                </a>
+                                <a href="{% url 'reject_job_request' request.id %}" 
+                                   class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
+                                   onclick="return confirm('Are you sure you want to reject this request?')">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                    Reject
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-8">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900">No job requests yet</h3>
+                    <p class="mt-1 text-sm text-gray-500">Job requests from freelancers will appear here.</p>
+                </div>
+            {% endif %}
+            
+            <div class="mt-6">
+                <a href="{% url 'job_detail' job.id %}" 
+                   class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Back to Job
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

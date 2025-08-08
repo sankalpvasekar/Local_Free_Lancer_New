@@ -1,0 +1,133 @@
+{% extends 'freelancer_platform/base.html' %}
+
+{% block title %}Post Job - Local Free-Lancer{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h1 class="text-2xl font-bold text-gray-900">Post a New Job</h1>
+            <p class="text-gray-600 mt-1">Create a job posting to find talented local freelancers</p>
+        </div>
+        
+        <div class="px-6 py-4">
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                
+                <div>
+                    <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Job Title *
+                    </label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.title.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Job Category *
+                    </label>
+                    {{ form.category }}
+                    {% if form.category.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.category.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.company_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Company Name *
+                    </label>
+                    {{ form.company_name }}
+                    {% if form.company_name.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.company_name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.location.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Location *
+                    </label>
+                    {{ form.location }}
+                    {% if form.location.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.location.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="{{ form.salary_min.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Minimum Salary ($) *
+                        </label>
+                        {{ form.salary_min }}
+                        {% if form.salary_min.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.salary_min.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.salary_max.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Maximum Salary ($) *
+                        </label>
+                        {{ form.salary_max }}
+                        {% if form.salary_max.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.salary_max.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div>
+                    <label for="{{ form.duration_months.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Duration (Months) *
+                    </label>
+                    {{ form.duration_months }}
+                    <p class="mt-1 text-sm text-gray-500">How many months this job will last</p>
+                    {% if form.duration_months.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.duration_months.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.required_skills.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Required Skills *
+                    </label>
+                    {{ form.required_skills }}
+                    <p class="mt-1 text-sm text-gray-500">List the skills and experience required for this job</p>
+                    {% if form.required_skills.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.required_skills.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Job Description *
+                    </label>
+                    {{ form.description }}
+                    <p class="mt-1 text-sm text-gray-500">Provide a detailed description of the job requirements and expectations</p>
+                    {% if form.description.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.description.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                    <button type="submit" 
+                            class="flex-1 inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Post Job
+                    </button>
+                    
+                    <a href="{% url 'dashboard' %}" 
+                       class="flex-1 inline-flex justify-center items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

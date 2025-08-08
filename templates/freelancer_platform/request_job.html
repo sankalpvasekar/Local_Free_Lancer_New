@@ -1,0 +1,246 @@
+{% extends 'freelancer_platform/base.html' %}
+
+{% block title %}Request Job - Local Free-Lancer{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h1 class="text-2xl font-bold text-gray-900">Request Job Assignment</h1>
+            <p class="text-gray-600 mt-1">Send a comprehensive request to work on this job</p>
+        </div>
+        
+        <div class="px-6 py-4">
+            <!-- Job Details -->
+            <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ job.title }}</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <span class="font-medium text-gray-700">Company:</span>
+                        <span class="text-gray-600">{{ job.company_name }}</span>
+                    </div>
+                    <div>
+                        <span class="font-medium text-gray-700">Location:</span>
+                        <span class="text-gray-600">{{ job.location }}</span>
+                    </div>
+                    <div>
+                        <span class="font-medium text-gray-700">Salary:</span>
+                        <span class="text-gray-600">₹{{ job.salary_min }} - ₹{{ job.salary_max }}</span>
+                    </div>
+                    <div>
+                        <span class="font-medium text-gray-700">Duration:</span>
+                        <span class="text-gray-600">{{ job.duration_months }} month{{ job.duration_months|pluralize }}</span>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <span class="font-medium text-gray-700">Required Skills:</span>
+                    <p class="text-gray-600 mt-1">{{ job.required_skills }}</p>
+                </div>
+            </div>
+
+            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- Cover Letter Section -->
+                <div class="bg-blue-50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Cover Letter</h3>
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.cover_letter.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Your Proposal Message *
+                        </label>
+                        {{ form.cover_letter }}
+                        <p class="mt-1 text-sm text-gray-500">
+                            Explain your experience, skills, and why you're the best fit for this position.
+                        </p>
+                        {% if form.cover_letter.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.cover_letter.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Audio Recording Section -->
+                    <div class="mb-4">
+                        <label for="{{ form.cover_letter_audio.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Record Audio Cover Letter (Optional)
+                        </label>
+                        <div class="flex items-center space-x-4">
+                            <button type="button" id="recordButton" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                                </svg>
+                                Start Recording
+                            </button>
+                            <button type="button" id="stopButton" class="hidden inline-flex items-center px-4 py-2 border border-red-300 rounded-md shadow-sm text-sm font-medium text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"></path>
+                                </svg>
+                                Stop Recording
+                            </button>
+                            <span id="recordingStatus" class="text-sm text-gray-500"></span>
+                        </div>
+                        {{ form.cover_letter_audio }}
+                        <p class="mt-1 text-sm text-gray-500">
+                            You can record your cover letter using your microphone, or upload an audio file.
+                        </p>
+                        {% if form.cover_letter_audio.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.cover_letter_audio.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Proposal Details Section -->
+                <div class="bg-green-50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Your Proposal</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label for="{{ form.proposal_type.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Proposal Type *
+                            </label>
+                            {{ form.proposal_type }}
+                            <p class="mt-1 text-sm text-gray-500">{{ form.proposal_type.help_text }}</p>
+                            {% if form.proposal_type.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.proposal_type.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div>
+                            <label for="{{ form.proposed_rate.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Proposed Rate (₹) *
+                            </label>
+                            {{ form.proposed_rate }}
+                            <p class="mt-1 text-sm text-gray-500">{{ form.proposed_rate.help_text }}</p>
+                            {% if form.proposed_rate.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.proposed_rate.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div>
+                            <label for="{{ form.proposed_duration.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Duration *
+                            </label>
+                            {{ form.proposed_duration }}
+                            <p class="mt-1 text-sm text-gray-500">{{ form.proposed_duration.help_text }}</p>
+                            {% if form.proposed_duration.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.proposed_duration.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Work Examples Section -->
+                <div class="bg-yellow-50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Previous Work Samples</h3>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Select Your Work Examples
+                        </label>
+                        <div class="space-y-2 max-h-60 overflow-y-auto">
+                            {% for choice in form.selected_work_examples %}
+                                <div class="flex items-center">
+                                    {{ choice.tag }}
+                                    <label for="{{ choice.data.attrs.id }}" class="ml-2 text-sm text-gray-700 cursor-pointer">
+                                        {{ choice.data.label }}
+                                    </label>
+                                </div>
+                            {% empty %}
+                                <p class="text-sm text-gray-500 italic">No work examples found. <a href="{% url 'add_work_example' %}" class="text-primary hover:underline">Add some work examples</a> to showcase your skills.</p>
+                            {% endfor %}
+                        </div>
+                        <p class="mt-1 text-sm text-gray-500">{{ form.selected_work_examples.help_text }}</p>
+                        {% if form.selected_work_examples.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.selected_work_examples.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Certificates Section -->
+                <div class="bg-purple-50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Certificates & Documents</h3>
+                    
+                    <div>
+                        <label for="{{ form.certificates.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Upload Certificates (Optional)
+                        </label>
+                        {{ form.certificates }}
+                        <p class="mt-1 text-sm text-gray-500">{{ form.certificates.help_text }}</p>
+                        {% if form.certificates.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.certificates.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                    <button type="submit" 
+                            class="flex-1 inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Send Request
+                    </button>
+                    
+                    <a href="{% url 'job_detail' job.id %}" 
+                       class="flex-1 inline-flex justify-center items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Back to Job
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Audio Recording JavaScript -->
+<script>
+let mediaRecorder;
+let audioChunks = [];
+
+document.getElementById('recordButton').addEventListener('click', async () => {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = (event) => {
+            audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+            const audioFile = new File([audioBlob], 'cover_letter_audio.wav', { type: 'audio/wav' });
+            
+            // Create a new FileList-like object
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(audioFile);
+            
+            // Set the file input
+            document.getElementById('{{ form.cover_letter_audio.id_for_label }}').files = dataTransfer.files;
+            
+            document.getElementById('recordingStatus').textContent = 'Recording saved!';
+        };
+
+        mediaRecorder.start();
+        document.getElementById('recordButton').classList.add('hidden');
+        document.getElementById('stopButton').classList.remove('hidden');
+        document.getElementById('recordingStatus').textContent = 'Recording...';
+    } catch (error) {
+        console.error('Error accessing microphone:', error);
+        alert('Error accessing microphone. Please check permissions.');
+    }
+});
+
+document.getElementById('stopButton').addEventListener('click', () => {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+        
+        document.getElementById('stopButton').classList.add('hidden');
+        document.getElementById('recordButton').classList.remove('hidden');
+    }
+});
+</script>
+{% endblock %} 

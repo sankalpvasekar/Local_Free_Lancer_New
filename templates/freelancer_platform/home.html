@@ -1,0 +1,298 @@
+{% extends 'freelancer_platform/base.html' %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+<div class="min-h-screen">
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-r from-primary to-secondary text-white py-20">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6" data-translate="hero_title">
+                Empowering Communities Through Local Work
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 text-blue-100" data-translate="hero_subtitle">
+                Connecting local talent with opportunities to reduce poverty and build stronger communities
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#register-options" class="bg-white text-primary hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold text-lg transition-colors" data-translate="get_started">
+                    Get Started
+                </a>
+                <a href="#about" class="border-2 border-white text-white hover:bg-white hover:text-primary px-8 py-3 rounded-lg font-semibold text-lg transition-colors" data-translate="learn_more">
+                    Learn More
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <div id="about" class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4" data-translate="about_title">
+                    About Local Free-Lancer
+                </h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto" data-translate="about_description">
+                    We are dedicated to addressing poverty through local economic empowerment. Our platform connects skilled local workers 
+                    with job opportunities, helping communities thrive and individuals achieve financial independence.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- For Local Workers -->
+                <div class="bg-gray-50 p-8 rounded-lg">
+                    <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4" data-translate="for_workers_title">For Local Workers</h3>
+                    <p class="text-gray-600" data-translate="for_workers_description">
+                        Find local job opportunities that match your skills. Build your portfolio, earn sustainable income, and contribute to your community's growth.
+                    </p>
+                </div>
+
+                <!-- For Job Recruiters -->
+                <div class="bg-gray-50 p-8 rounded-lg">
+                    <div class="w-16 h-16 bg-accent rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4" data-translate="for_recruiters_title">For Job Recruiters</h3>
+                    <p class="text-gray-600" data-translate="for_recruiters_description">
+                        Post job opportunities and connect with talented local workers. Support community development while finding the perfect match for your needs.
+                    </p>
+                </div>
+
+                <!-- Poverty Reduction Impact -->
+                <div class="bg-gray-50 p-8 rounded-lg">
+                    <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4" data-translate="poverty_reduction_title">Poverty Reduction</h3>
+                    <p class="text-gray-600" data-translate="poverty_reduction_description">
+                        Support local economic growth and reduce poverty by connecting talent with opportunity in your community.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registration Options Section -->
+    <div id="register-options" class="py-16 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4" data-translate="join_community_title">
+                    Join Our Community
+                </h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto" data-translate="join_community_subtitle">
+                    Choose your role and start making a difference in your community
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Local Worker Registration -->
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <div class="text-center mb-6">
+                        <div class="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2" data-translate="worker_card_title">I'm a Local Worker</h3>
+                        <p class="text-gray-600" data-translate="worker_card_desc">Find job opportunities and build your career</p>
+                    </div>
+                    
+                    <div class="space-y-4 mb-6">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-gray-700" data-translate="worker_benefit1">Find local job opportunities</span>
+                        </div>
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-gray-700" data-translate="worker_benefit2">Build your professional profile</span>
+                        </div>
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-gray-700" data-translate="worker_benefit3">Get AI-powered job recommendations</span>
+                        </div>
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-gray-700" data-translate="worker_benefit4">Access community resources</span>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <a href="{% url 'register' %}?type=freelancer" class="w-full bg-primary hover:bg-secondary text-white font-semibold py-3 px-6 rounded-lg transition-colors block text-center" data-translate="register_worker_btn">
+                            Register as Worker
+                        </a>
+                        <a href="{% url 'login' %}?type=freelancer" class="w-full border border-primary text-primary hover:bg-primary hover:text-white font-semibold py-3 px-6 rounded-lg transition-colors block text-center" data-translate="login_worker_btn">
+                            Login as Worker
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Job Recruiter Registration -->
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <div class="text-center mb-6">
+                        <div class="w-20 h-20 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2" data-translate="recruiter_card_title">I'm a Job Recruiter</h3>
+                        <p class="text-gray-600" data-translate="recruiter_card_desc">Post jobs and find talented local workers</p>
+                    </div>
+                    
+                    <div class="space-y-4 mb-6">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-gray-700" data-translate="recruiter_benefit1">Post job opportunities</span>
+                        </div>
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-gray-700" data-translate="recruiter_benefit2">Connect with local talent</span>
+                        </div>
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-gray-700" data-translate="recruiter_benefit3">Support community development</span>
+                        </div>
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-gray-700" data-translate="recruiter_benefit4">Manage applications easily</span>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <a href="{% url 'register' %}?type=recruiter" class="w-full bg-accent hover:bg-yellow-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors block text-center" data-translate="register_recruiter_btn">
+                            Register as Recruiter
+                        </a>
+                        <a href="{% url 'login' %}?type=recruiter" class="w-full border border-accent text-accent hover:bg-accent hover:text-white font-semibold py-3 px-6 rounded-lg transition-colors block text-center" data-translate="login_recruiter_btn">
+                            Login as Recruiter
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4" data-translate="features_title">
+                    Why Choose Local Free-Lancer?
+                </h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="space-y-6">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-semibold text-gray-900" data-translate="feature1_title">Local Community Focus</h3>
+                            <p class="text-gray-600" data-translate="feature1_desc">Connect with workers and opportunities in your own community, supporting local economic growth.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-semibold text-gray-900" data-translate="feature2_title">Poverty Reduction</h3>
+                            <p class="text-gray-600" data-translate="feature2_desc">Our platform directly addresses poverty by creating sustainable employment opportunities.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-semibold text-gray-900" data-translate="feature3_title">AI-Powered Matching</h3>
+                            <p class="text-gray-600" data-translate="feature3_desc">Advanced algorithms match workers with the best opportunities based on skills and preferences.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-semibold text-gray-900" data-translate="feature4_title">Skill Development</h3>
+                            <p class="text-gray-600" data-translate="feature4_desc">Access resources and training to improve your skills and increase your earning potential.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-semibold text-gray-900" data-translate="feature5_title">Secure Payments</h3>
+                            <p class="text-gray-600" data-translate="feature5_desc">Safe and transparent payment system ensuring workers get paid fairly and on time.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-semibold text-gray-900" data-translate="feature6_title">Community Support</h3>
+                            <p class="text-gray-600" data-translate="feature6_desc">Join a supportive community of workers and recruiters committed to local development.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
